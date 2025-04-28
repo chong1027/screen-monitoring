@@ -60,7 +60,7 @@ while True:
     try:
         # 接收影像大小
         data_size = int.from_bytes(conn.recv(4), 'big')
-        if data_size <= 0 or data_size > 10**7:
+        if data_size <= 0 or data_size > 2**20:
             print("接收到的資料大小不合理")
             break
 
@@ -96,9 +96,17 @@ while True:
         cv2.imshow("Live Screenshot", img)
         
 
-        # 檢查是否按下 ESC 鍵退出
-        if cv2.waitKey(1) & 0xFF == 27:
-            break
+        key =cv2.waitKey(1)&0xff
+        if key !=255:
+            print(f"按下鍵盤: {key}")
+            try:
+                conn.sendall(b'K')  # 傳送指令類型 'K'
+                conn.sendall(key.to_bytes(1, 'big'))  # 傳送按鍵值
+                print(f"傳送按鍵: {key}")
+            except socket.error as e:
+                print(f"傳送按鍵失敗: {e}")
+            except Exception as e:
+                print(f"無法傳送按鍵: {e}")
 
     except socket.timeout:
         print("接收資料超時，重新嘗試")

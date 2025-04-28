@@ -66,6 +66,19 @@ def Client_Mouse(client_socket):
             print(f"接收指令時發生錯誤: {e}")
         finally:
             print("停止接收滑鼠點擊指令")
+
+def Client_Keyboard(client_socket):
+    while True:
+        try:
+            print("開始接收鍵盤指令...")
+            command_type = client_socket.recv(1).decode('utf-8')  # 接收指令類型
+            if command_type == 'K':  # 'K' 表示鍵盤按下
+                key = int.from_bytes(client_socket.recv(1),'big')  # 接收按鍵值
+                print(f"接收到鍵盤指令: {chr(key)}")
+        except Exception as e:
+            print(f"接收指令時發生錯誤: {e}")
+
+
 if __name__ == "__main__":
     while True:
         try:
@@ -79,12 +92,15 @@ if __name__ == "__main__":
             # 啟動線程
             thread1 = threading.Thread(target=ShowDisPlayToBack, args=(client_socket,))
             thread2 = threading.Thread(target=Client_Mouse, args=(client_socket,))
+            thread3 = threading.Thread(target=Client_Keyboard, args=(client_socket,))
             thread1.start()
             thread2.start()
+            thread3.start()
 
             # 等待線程結束
             thread1.join()
             thread2.join()
+            thread3.join()
 
         except socket.timeout:
             print("Socket 連線超時，重新嘗試")
