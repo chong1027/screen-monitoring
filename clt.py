@@ -48,7 +48,7 @@ def ShowDisPlayToBack(client_socket):
     finally:
         print("停止發送螢幕擷取影像")
             
-def CltMoes(client_socket):
+def Client_Mouse(client_socket):
     while True:
         try:
             print("開始接收滑鼠點擊指令...")
@@ -78,7 +78,7 @@ if __name__ == "__main__":
             client_socket.settimeout(100)  # 設定 timeout
             # 啟動線程
             thread1 = threading.Thread(target=ShowDisPlayToBack, args=(client_socket,))
-            thread2 = threading.Thread(target=CltMoes, args=(client_socket,))
+            thread2 = threading.Thread(target=Client_Mouse, args=(client_socket,))
             thread1.start()
             thread2.start()
 
