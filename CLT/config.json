@@ -1,0 +1,11 @@
+{
+    "entry": "./clt.py",
+    "hidden_imports": [
+      "mss",
+      "numpy",
+        "cv2"
+    ],
+    "options": "--onefile --noconsole",
+    "icon": "clt.ico"
+  }
+  

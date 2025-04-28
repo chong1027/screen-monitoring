@@ -1,0 +1,12 @@
+{
+    "entry": "./serverpor.py",
+    "hidden_imports": [
+      "mss",
+      "numpy",
+        "cv2"
+    ],
+    "options": "--onefile ",
+    "_":"--noconsole",
+    "icon": "clt.ico"
+  }
+  
