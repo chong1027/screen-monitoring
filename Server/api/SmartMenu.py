@@ -1,12 +1,14 @@
 # api.py
 import platform
-
+import time
+import sys
 class SmartMenu:
-    def __init__(self, options):
+    def __init__(self, options,selected,top=0):
         self.options = options
-        self.selected = 0
+        self.selected = selected if selected != sys.maxsize else 0
         self.os_name = platform.system()
-    
+        self.top = top
+
     def show(self):
         if self.os_name == 'Windows':
             return self._windows_menu()
@@ -22,22 +24,31 @@ class SmartMenu:
 
         def print_menu():
             clear_screen()
+            now=0
             for i, option in enumerate(self.options):
-                if i == self.selected:
-                    print(f"> {option} <")
+                if self.top == 0:
+                    if i == self.selected:
+                        print(f"> {option} <")
+                    else:
+                        print(f"  {option}")
                 else:
-                    print(f"  {option}")
-
-        while True:
+                    if i < self.top:
+                        print(f"  {option}")
+                    elif i == self.selected + self.top:
+                        print(f"> {option} <")
+                    else:
+                        print(f"  {option}")
+        start_time = time.time()
+        while True and time.time() - start_time < 1:
             print_menu()
             key = msvcrt.getch()
 
             if key == b'\xe0':  # Special key prefix
                 next_key = msvcrt.getch()
                 if next_key == b'H':  # Up arrow
-                    self.selected = (self.selected - 1) % len(self.options)
+                    self.selected = (self.selected - 1) % (len(self.options) - self.top)
                 elif next_key == b'P':  # Down arrow
-                    self.selected = (self.selected + 1) % len(self.options)
+                    self.selected = (self.selected + 1) % (len(self.options) - self.top)
 
             elif key == b'\r':  # Enter
                 return self.selected
@@ -50,8 +61,8 @@ class SmartMenu:
 
         def menu(stdscr):
             curses.curs_set(0)
-
-            while True:
+            start_time = time.time()
+            while True and time.time() - start_time < 5:
                 stdscr.clear()
                 h, w = stdscr.getmaxyx()
 
