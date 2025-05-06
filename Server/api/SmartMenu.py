@@ -69,19 +69,28 @@ class SmartMenu:
                 for i, option in enumerate(self.options):
                     x = w//2 - len(option)//2
                     y = h//2 - len(self.options)//2 + i
-                    if i == self.selected:
-                        stdscr.attron(curses.A_REVERSE)
-                        stdscr.addstr(y, x, option)
-                        stdscr.attroff(curses.A_REVERSE)
+                    if self.top == 0:
+                        if i == self.selected:
+                            stdscr.attron(curses.A_REVERSE)
+                            stdscr.addstr(y, x, option)
+                            stdscr.attroff(curses.A_REVERSE)
+                        else:
+                            stdscr.addstr(y, x, option)
                     else:
-                        stdscr.addstr(y, x, option)
-
+                        if i < self.top:
+                            stdscr.addstr(y, x, option)
+                        elif i == self.selected + self.top:
+                            stdscr.attron(curses.A_REVERSE)
+                            stdscr.addstr(y, x, option)
+                            stdscr.attroff(curses.A_REVERSE)
+                        else:
+                            stdscr.addstr(y, x, option)
                 key = stdscr.getch()
 
                 if key == curses.KEY_UP:
-                    self.selected = (self.selected - 1) % len(self.options)
+                    self.selected = abs(self.selected - 1) % (len(self.options)-self.top)
                 elif key == curses.KEY_DOWN:
-                    self.selected = (self.selected + 1) % len(self.options)
+                    self.selected = (self.selected + 1) % (len(self.options)-self.top)
                 elif key in [curses.KEY_ENTER, 10, 13]:
                     return self.selected
                 elif key == 27:  # ESC
